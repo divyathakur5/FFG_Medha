@@ -1,8 +1,6 @@
 package com.ffg.medha.service;
 
 import com.ffg.medha.dao.StudentDetailsRepo;
-import com.ffg.medha.model.Category;
-import com.ffg.medha.model.GenderType;
 import com.ffg.medha.model.Student;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +35,7 @@ public class RegistrationService {
     Properties metadata;
 
     public String uploadExcel(MultipartFile file) throws Exception {
-        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFWorkbook workbook = new XSSFWorkbook(file.getInputStream());
         XSSFSheet sheet = workbook.getSheetAt(0);
         List<Student> studentList = getStudentsFromFile(sheet);
 
@@ -94,24 +92,30 @@ public class RegistrationService {
                         metadata.getProperty("lastName"))).getStringCellValue());
             }
             if(row.getCell(Integer.parseInt(metadata.getProperty("emailId"))) != null){
+                row.getCell(Integer.parseInt(
+                        metadata.getProperty("emailId"))).setCellType(CellType.STRING);
                 student.setEmailId(row.getCell(Integer.parseInt(
                         metadata.getProperty("emailId"))).getStringCellValue());
             }
             if(row.getCell(Integer.parseInt(metadata.getProperty("address"))) != null){
+                row.getCell(Integer.parseInt(
+                        metadata.getProperty("address"))).setCellType(CellType.STRING);
                 student.setAddress(row.getCell(Integer.parseInt(
                         metadata.getProperty("address"))).getStringCellValue());
             }
             if(row.getCell(Integer.parseInt(metadata.getProperty("phoneNumber"))) != null){
+                row.getCell(Integer.parseInt(
+                        metadata.getProperty("phoneNumber"))).setCellType(CellType.STRING);
                 student.setPhoneNumber(row.getCell(Integer.parseInt(
                         metadata.getProperty("phoneNumber"))).getStringCellValue());
             }
             if(row.getCell(Integer.parseInt(metadata.getProperty("gender"))) != null){
-                student.setGender(GenderType.valueOf(row.getCell(Integer.parseInt(
-                        metadata.getProperty("gender"))).getStringCellValue()));
+                student.setGender(row.getCell(Integer.parseInt(
+                        metadata.getProperty("gender"))).getStringCellValue());
             }
             if(row.getCell(Integer.parseInt(metadata.getProperty("category"))) != null){
-                student.setCategory(Category.valueOf(row.getCell(Integer.parseInt(
-                        metadata.getProperty("category"))).getStringCellValue()));
+                student.setCategory(row.getCell(Integer.parseInt(
+                        metadata.getProperty("category"))).getStringCellValue());
             }
             if(row.getCell(Integer.parseInt(metadata.getProperty("relativeName"))) != null){
                 student.setRelativeName(row.getCell(Integer.parseInt(
@@ -122,18 +126,22 @@ public class RegistrationService {
                         metadata.getProperty("parentsOccupation"))).getStringCellValue());
             }
             if(row.getCell(Integer.parseInt(metadata.getProperty("aadharNumber"))) != null){
-                student.setPhoneNumber(row.getCell(Integer.parseInt(
+                row.getCell(Integer.parseInt(
+                        metadata.getProperty("aadharNumber"))).setCellType(CellType.STRING);
+                student.setAadharNumber(row.getCell(Integer.parseInt(
                         metadata.getProperty("aadharNumber"))).getStringCellValue());
             }
             if(row.getCell(Integer.parseInt(metadata.getProperty("noOfEarningFamilyMembers"))) != null){
-                row.getCell(Integer.parseInt(metadata.getProperty("noOfEarningFamilyMembers"))).setCellType(CellType.STRING);
-                student.setNoOfEarningFamilyMembers(Long.parseLong(row.getCell(Integer.parseInt(
-                        metadata.getProperty("noOfEarningFamilyMembers"))).getStringCellValue()));
+                row.getCell(Integer.parseInt(metadata.getProperty("noOfEarningFamilyMembers")))
+                        .setCellType(CellType.STRING);
+                student.setNoOfEarningFamilyMembers(row.getCell(Integer.parseInt(
+                        metadata.getProperty("noOfEarningFamilyMembers"))).getStringCellValue());
             }
             if(row.getCell(Integer.parseInt(metadata.getProperty("totalHouseholdIncome"))) != null){
-                row.getCell(Integer.parseInt(metadata.getProperty("totalHouseholdIncome"))).setCellType(CellType.STRING);
-                student.setTotalHouseholdIncome(Double.parseDouble(row.getCell(Integer.parseInt(
-                        metadata.getProperty("totalHouseholdIncome"))).getStringCellValue()));
+                row.getCell(Integer.parseInt(
+                        metadata.getProperty("totalHouseholdIncome"))).setCellType(CellType.STRING);
+                student.setTotalHouseholdIncome(row.getCell(Integer.parseInt(
+                        metadata.getProperty("totalHouseholdIncome"))).getStringCellValue());
             }
             if(row.getCell(Integer.parseInt(metadata.getProperty("ownGadget"))) != null){
                 student.setOwnGadget(row.getCell(Integer.parseInt(
@@ -148,9 +156,10 @@ public class RegistrationService {
                         metadata.getProperty("collegeName"))).getStringCellValue());
             }
             if(row.getCell(Integer.parseInt(metadata.getProperty("completedAcademicYear"))) != null){
-                row.getCell(Integer.parseInt(metadata.getProperty("completedAcademicYear"))).setCellType(CellType.STRING);
-                student.setCompletedAcademicYear(Long.parseLong(row.getCell(Integer.parseInt(
-                        metadata.getProperty("completedAcademicYear"))).getStringCellValue()));
+                row.getCell(Integer.parseInt(
+                        metadata.getProperty("completedAcademicYear"))).setCellType(CellType.STRING);
+                student.setCompletedAcademicYear(row.getCell(Integer.parseInt(
+                        metadata.getProperty("completedAcademicYear"))).getStringCellValue());
             }
             if(row.getCell(Integer.parseInt(metadata.getProperty("about"))) != null){
                 student.setAbout(row.getCell(Integer.parseInt(
