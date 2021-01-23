@@ -35,4 +35,5 @@ public class Student {
     protected String about;
     protected String areaOfInterest;
     protected String hoursAllocation;
+    protected boolean needsNgoApproval;
 }

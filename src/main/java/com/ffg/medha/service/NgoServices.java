@@ -16,24 +16,27 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
+@Data
 @Service
 @Slf4j
-@Data
-public class RegistrationService {
+public class NgoServices {
 
     @Autowired
-    private StudentDetailsRepo studentDetailsRepo;
+    StudentDetailsRepo studentDetailsRepo;
 
     @Value("${excel.config.location}")
     String metadataLocation;
 
     Properties metadata;
 
+    /**
+     * Upload excel sheet to onboard users
+     * @param file
+     * @return
+     * @throws Exception
+     */
     public String uploadExcel(MultipartFile file) throws Exception {
         XSSFWorkbook workbook = new XSSFWorkbook(file.getInputStream());
         XSSFSheet sheet = workbook.getSheetAt(0);
@@ -54,15 +57,15 @@ public class RegistrationService {
      * @return
      */
     private boolean persistData(List<Student> studentList) {
-       try{
-           studentList.forEach(eachStudent-> {
-               studentDetailsRepo.save(eachStudent);
-           });
-       }catch(Exception e){
-           log.error(e.getMessage());
-           return false;
+        try{
+            studentList.forEach(eachStudent-> {
+                studentDetailsRepo.save(eachStudent);
+            });
+        }catch(Exception e){
+            log.error(e.getMessage());
+            return false;
         }
-       return true;
+        return true;
     }
 
     /**
@@ -174,6 +177,7 @@ public class RegistrationService {
                         metadata.getProperty("hoursAllocation"))).getStringCellValue());
             }
             student.setPassword("welcome123");
+            student.setNeedsNgoApproval(false);
             studentList.add(student);
         }
         return studentList;
@@ -189,4 +193,33 @@ public class RegistrationService {
         yamlPropertiesFactoryBean.setResources(resource);
         return yamlPropertiesFactoryBean.getObject();
     }
+
+    /**
+     * Delete Student record
+     * @param email
+     * @return
+     */
+    public String deleteUser(String email) {
+        Student student = studentDetailsRepo.findByEmailId(email);
+        if(student != null)  {
+            studentDetailsRepo.delete(student);
+            return "Deleted user " + email + " successfully!!";
+        }else{
+            return "User " + email + " not found.";
+        }
+    }
+
+    /**
+     * Gets the list of users that need ngo approval for registration
+     * @return
+     */
+    public List<Student> getPendingApprovalRequests() {
+        List<Student> studentList = studentDetailsRepo.findAllByNeedsNgoApproval(true);
+        if(!studentList.isEmpty()){
+            return studentList;
+        }else{
+            return new ArrayList<>();
+        }
+    }
 }
+
