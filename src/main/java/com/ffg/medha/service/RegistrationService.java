@@ -29,7 +29,7 @@ import java.util.Properties;
 public class RegistrationService {
 
     @Autowired
-    StudentDetailsRepo studentDetailsRepo;
+    private StudentDetailsRepo studentDetailsRepo;
 
     @Value("${excel.config.location}")
     String metadataLocation;
@@ -40,6 +40,7 @@ public class RegistrationService {
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet sheet = workbook.getSheetAt(0);
         List<Student> studentList = getStudentsFromFile(sheet);
+
         //add list of students to be registered into db
         boolean success = persistData(studentList);
         if(success){
@@ -49,6 +50,11 @@ public class RegistrationService {
         }
     }
 
+    /**
+     * Persist Students Data into Database
+     * @param studentList
+     * @return
+     */
     private boolean persistData(List<Student> studentList) {
        try{
            studentList.forEach(eachStudent-> {
@@ -61,6 +67,12 @@ public class RegistrationService {
        return true;
     }
 
+    /**
+     * Parse Excel Sheet to populate Student Details
+     * @param sheet
+     * @return
+     * @throws Exception
+     */
     private List<Student> getStudentsFromFile(XSSFSheet sheet) throws Exception {
         metadata = getExcelMetadata();
         if(metadata == null){
@@ -152,11 +164,16 @@ public class RegistrationService {
                 student.setHoursAllocation(row.getCell(Integer.parseInt(
                         metadata.getProperty("hoursAllocation"))).getStringCellValue());
             }
+            student.setPassword("welcome123");
             studentList.add(student);
         }
         return studentList;
     }
 
+    /**
+     * Obtain Metadata for parsing Excel Sheet
+     * @return
+     */
     private Properties getExcelMetadata() {
         Resource resource = new ClassPathResource(metadataLocation);
         YamlPropertiesFactoryBean yamlPropertiesFactoryBean = new YamlPropertiesFactoryBean();
