@@ -1,5 +1,6 @@
 package com.ffg.medha.controller;
 
+import com.ffg.medha.model.Student;
 import com.ffg.medha.model.UserDetails;
 import com.ffg.medha.service.RegistrationService;
 import com.ffg.medha.service.UserServices;
@@ -30,10 +31,8 @@ public class SampleController {
             throws Exception {
         return userServices.signIn(userDetails);
     }
-
-    @PostMapping("/insertData")
-    public String insertData(String data){
-        return "done" + data;
-    }
-
+//
+//    @PostMapping("updateData")
+//    public String updateData(@RequestBody Student student){
+//    }
 }
