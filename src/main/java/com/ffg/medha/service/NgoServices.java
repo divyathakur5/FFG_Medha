@@ -221,5 +221,21 @@ public class NgoServices {
             return new ArrayList<>();
         }
     }
+
+    /**
+     * Approve user registration
+     * @param email
+     * @return
+     */
+    public String approveUser(String email) {
+        Student student = studentDetailsRepo.findByEmailId(email);
+        if(student != null){
+            student.setNeedsNgoApproval(false);
+            studentDetailsRepo.save(student);
+            return "Approved user : " + email ;
+        }else{
+            return "No user with email " + email + "found";
+        }
+    }
 }
 

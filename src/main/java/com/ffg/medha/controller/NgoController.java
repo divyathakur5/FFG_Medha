@@ -42,4 +42,10 @@ public class NgoController {
         return ngoServices.getPendingApprovalRequests();
     }
 
+    @PostMapping("/approveUsers")
+    public String approveUser(@RequestBody String email){
+        log.info("Approve User");
+        return ngoServices.approveUser(email);
+    }
+
 }
